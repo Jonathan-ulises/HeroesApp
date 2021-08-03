@@ -4,11 +4,14 @@ import { ListadoComponent } from './pages/listado/listado.component';
 import { AgregarComponent } from './pages/agregar/agregar.component';
 import { BuscarComponent } from './pages/buscar/buscar.component';
 import { HeroeComponent } from './pages/heroe/heroe.component';
+import { HomeComponent } from './pages/home/home.component';
 
 //ChilRoot Heroes
 const rutas: Routes = [
   {
     path: '',
+    //Pagina principal para mostrar todas estas subrutas
+    component: HomeComponent,
     children: [
       {
         path: 'listado',
