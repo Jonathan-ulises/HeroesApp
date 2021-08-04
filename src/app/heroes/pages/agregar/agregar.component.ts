@@ -11,6 +11,7 @@ import { switchMap } from 'rxjs/operators';
     `
       img {
         width: 100%;
+        border-radius: 5px;
       }
     `
   ]
@@ -75,5 +76,12 @@ export class AgregarComponent implements OnInit {
       });
 
     }
+  }
+
+  borrarHeroe() : void {
+    this.heroesService.borrarHeroe( this.heroe.id! )
+      .subscribe( resp => {
+        this.router.navigate(['/heroes'])
+      });
   }
 }
