@@ -6,18 +6,29 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanLoad {
+export class AuthGuard implements CanLoad, CanActivate {
 
   constructor(
     private authService: AuthService
   ){}
-  // canActivate(
-  //   route: ActivatedRouteSnapshot,
-  //   state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-  //   return true;
-  // }
 
-  //* Previene si puede cargar el modulo, si el modulo ya a sido cargado, el usuario puede entrar en el
+  //* Previene si puede activar alguna ruta, si ya fue cargado el modulo o ruta, este valida cuando se active,
+  //* cuando el usuario entre en ella; si devuelve un false, este no podra mostrar las secciones que tengan esta
+  //* propiedad.
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+
+      if( this.authService.auth.id ) {
+        return true;
+      }
+
+      console.log( 'Baneado por el AuthGuard papu... - CanActivate' )
+
+    return true;
+  }
+
+  //* Previene si puede cargar la ruta, si la ruta ya a sido cargada, el usuario puede entrar en ella
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
@@ -30,7 +41,7 @@ export class AuthGuard implements CanLoad {
         return true;
       }
 
-      console.log( 'Baneado por el AuthGuard papu...' )
+      console.log( 'Baneado por el AuthGuard papu... - CanLoad' )
 
       return false;
   }
