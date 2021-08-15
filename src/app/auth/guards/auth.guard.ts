@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanLoad, CanActivate {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ){}
 
   //* Previene si puede activar alguna ruta, si ya fue cargado el modulo o ruta, este valida cuando se active,
@@ -19,13 +21,24 @@ export class AuthGuard implements CanLoad, CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 
-      if( this.authService.auth.id ) {
-        return true;
-      }
+    //   if( this.authService.auth.id ) {
+    //     return true;
+    //   }
 
-      console.log( 'Baneado por el AuthGuard papu... - CanActivate' )
+    //   console.log( 'Baneado por el AuthGuard papu... - CanActivate' )
 
-    return true;
+    // return true;
+
+    return this.authService.verificaAutentificacion()
+              .pipe(
+                tap( estaAutenticado => {
+
+                  if( !estaAutenticado ) {
+                    this.router.navigate(['./auth/login']);
+                  }
+
+                })
+              );
   }
 
   //* Previene si puede cargar la ruta, si la ruta ya a sido cargada, el usuario puede entrar en ella
@@ -33,16 +46,26 @@ export class AuthGuard implements CanLoad, CanActivate {
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
 
+      return this.authService.verificaAutentificacion()
+              .pipe(
+                tap( estaAutenticado => {
+
+                  if( !estaAutenticado ) {
+                    this.router.navigate(['./auth/login']);
+                  }
+
+                })
+              );
+
       // console.log('canLoad', false);
       // console.log(route);
       // console.log(segments);
 
-      if( this.authService.auth.id ) {
-        return true;
-      }
+      // if( this.authService.auth.id ) {
+      //   return true;
+      // }
 
-      console.log( 'Baneado por el AuthGuard papu... - CanLoad' )
-
-      return false;
+      // console.log( 'Baneado por el AuthGuard papu... - CanLoad' )
+      // return false;
   }
 }
