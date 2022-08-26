@@ -28,6 +28,11 @@ const routes: Routes = [
   }
 ]
 
+/**
+ * COMENTARIO DE PRUEBA XD
+ * PARA PROBAR SUBLIME MERGE
+ */
+
 @NgModule({
   imports: [
     RouterModule.forRoot( routes )
